@@ -1,48 +1,67 @@
 var express = require('express');
 var router = express.Router();
 var createError = require('http-errors');
+const User = require('../../../models/users')
 
-/* GET home page. */
+// GET
 router.get('/', function(req, res, next) {
-  const us = [
-  {
-    name: 'kim',
-    age: 14,
-    job: 'dev'    
-  },
-  {
-    name: 'kim',
-    age: 14,
-    job: 'musician'
-  },
-  {
-    name: 'kim',
-    age: 14,
-    job: 'hunter'
-  },
-  ]
-  res.send({users: us})
+  User.find()
+  .then(result=> {
+    console.log(result)
+    res.send({success: true, users: result})})
+  .catch(error=>{
+    console.log(error);
+    res.send({success: false})
+  })
 })
 
 
+// POST
 
 router.post('/', (req, res, next) => {
-  res.send({success : true})
+  const {name, age} = req.body;
+  const u = new User ({
+    name, age
+  })
+  u.save()
+  .then(r=> {
+    console.log(r)
+    res.send({success: true, user: r})})
+  .catch(e=>{
+    console.log(e);
+    res.send({success: false, msg:e.message})
+  })
 })
 
-router.put('/', (req, res, next) => {
-  res.send({success : true})
+// PUT
+router.put('/:id', (req, res, next) => {
+  const id = req.params.id
+  const {name, age} = req.body;
+  User.updateOne({_id: id}, {$set: {name ,age}})
+  .then(r=>{
+    res.send({success: true, user: r })
+  })
+  .catch(e=>{
+    res.send({success: false, msg:e.message})
+})
+})
+// DELETE
+
+router.delete('/:id', (req, res, next) => {
+  const id = req.params.id
+  User.deleteOne({_id: id})
+  .then(r=>{
+    res.send({success: true, user: r })
+  })
+  .catch(e=>{
+    res.send({success: false, msg:e.message})
+})
 })
 
-router.delete('/', (req, res, next) => {
-  res.send({success : true})
-})
 
 router.all('*', function(req, res, next) {
   next(createError('no such api exits'));
 })
-
-
 
 
 module.exports = router;

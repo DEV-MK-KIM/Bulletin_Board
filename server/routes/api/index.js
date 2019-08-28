@@ -3,6 +3,7 @@ var router = express.Router();
 var createError = require('http-errors');
 
 
+
 router.use('/user', require('./user'))
 /* GET home page. */
 router.get('/hello', function(req, res, next) {
@@ -16,8 +17,6 @@ router.get('/hi', function(req, res, next) {
 router.all('*', function(req, res, next) {
   next(createError('no such api exits'));
 })
-
-
 
 
 

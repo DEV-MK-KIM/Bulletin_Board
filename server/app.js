@@ -3,7 +3,9 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var cors = require('cors')
+var cors = require('cors');
+const mongoose = require('mongoose');
+const User = require('./models/users')
 
 // var indexRouter = require('./routes/index');
 // var usersRouter = require('./routes/users');
@@ -42,3 +44,15 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
+
+
+//MONGO DB//
+
+
+mongoose.connect('mongodb://localhost:27017/server',{useNewUrlParser: true})
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  console.log('Mongoose connected');
+});
+
